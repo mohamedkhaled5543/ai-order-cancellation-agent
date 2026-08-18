@@ -1,0 +1,192 @@
+{
+  "name": "checking order statue",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gTvBoNN_GSb6dcuTKYKZpHZM_RYfP52Zth70FKGW7-0",
+          "mode": "list",
+          "cachedResultName": "orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gTvBoNN_GSb6dcuTKYKZpHZM_RYfP52Zth70FKGW7-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 614456403,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gTvBoNN_GSb6dcuTKYKZpHZM_RYfP52Zth70FKGW7-0/edit#gid=614456403"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "order_id",
+              "lookupValue": "={{ $json.query }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        304
+      ],
+      "id": "a43a16e5-7346-4fed-914c-bc105ae99f97",
+      "name": "Get row(s) in sheet"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "39ca15d7-eb81-4497-9c90-400a370450f9",
+              "leftValue": "={{ $json.order_status }}",
+              "rightValue": "Processing",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "83cf5100-1fbb-48bb-9f8e-5abff0a4e766",
+              "leftValue": "={{ $json.payment_status }}",
+              "rightValue": "Failed",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        656,
+        304
+      ],
+      "id": "d2d1d48b-3686-4cf5-b251-f06b7ddf088e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "943f0dfe-3807-4b47-a8ca-75492c1c6ca0",
+              "name": "order_id",
+              "value": "={{ $json.order_id  }}",
+              "type": "string"
+            },
+            {
+              "id": "3559e9eb-7496-4abf-8aa3-d8f5488aec98",
+              "name": "eligible_for_cancellation",
+              "value": "true",
+              "type": "string"
+            },
+            {
+              "id": "dc77829e-910c-4fc1-a96b-18c5aee178e0",
+              "name": "order_status",
+              "value": "={{ $json.order_status }}",
+              "type": "string"
+            },
+            {
+              "id": "ffea58fd-1aea-47f5-a44a-8abe38d1b03c",
+              "name": "payment_status",
+              "value": "={{ $json.payment_status }}",
+              "type": "string"
+            },
+            {
+              "id": "73695230-5da2-42c9-8d39-684c64d28248",
+              "name": "reason",
+              "value": "Order is eligible for cancellation",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        208
+      ],
+      "id": "47f6df31-3cf0-4a36-a94e-6919557f46ec",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "eca67c54-6574-49be-ac4b-8cdd9c5e3db1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b693a1ce44cc6b71ba473406a1e130a869d621ad18ce4b6f4ca83a4b643b3dce"
+  },
+  "id": "bVG1VaTg6St3MO5t",
+  "tags": []
+}
